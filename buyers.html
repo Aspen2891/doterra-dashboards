@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>doTERRA — Buyer Attributes</title>
+    <style>
+      :root {
+        --green: #0a5f3c;
+        --ink: #1a1a1a;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --bg: #f7f8f7;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font:
+          15px/1.5 system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+        margin: 0;
+      }
+      header {
+        background: var(--green);
+        color: #fff;
+        padding: 18px 24px;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 19px;
+      }
+      header p {
+        margin: 2px 0 0;
+        opacity: 0.85;
+        font-size: 13px;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px 24px 60px;
+      }
+      #dropzone {
+        border: 2px dashed var(--green);
+        border-radius: 10px;
+        background: #fff;
+        padding: 22px;
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.15s;
+        display: block;
+      }
+      #dropzone.drag {
+        background: #eafaf1;
+      }
+      #dropzone.loaded {
+        padding: 10px;
+        font-size: 13px;
+        opacity: 0.8;
+      }
+      #dropzone strong {
+        color: var(--green);
+      }
+      #file {
+        display: none;
+      }
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 14px 0 18px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+        min-width: 150px;
+        flex: 1;
+      }
+      .card-v {
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .card-l {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-top: 2px;
+      }
+      .card-s {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin: 16px 0;
+      }
+      .panel h2 {
+        margin: 0 0 8px;
+        font-size: 15px;
+      }
+      table.tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .tbl th,
+      .tbl td {
+        text-align: left;
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--line);
+      }
+      .tbl th {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 12px;
+      }
+      .tbl th.sortable {
+        cursor: pointer;
+        user-select: none;
+      }
+      .tbl th.sortable:hover {
+        color: var(--ink);
+      }
+      .tbl td.num,
+      .tbl th.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .tbl.click tr.row {
+        cursor: pointer;
+      }
+      .tbl.click tr.row:hover {
+        background: #f3fbf7;
+      }
+      .caret {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .tbl .detail > td {
+        background: #fafafa;
+        padding: 6px 8px 12px 28px;
+      }
+      .tbl.sub {
+        margin: 0;
+      }
+      .tbl.sub th,
+      .tbl.sub td {
+        border-bottom: 1px solid #eee;
+        padding: 4px 8px;
+      }
+      code {
+        background: #f2f2f2;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        font-size: 12px;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .small {
+        font-size: 11px;
+      }
+      .unit {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .controls input,
+      .controls select {
+        font: inherit;
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      .controls label {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      details.panel > summary {
+        cursor: pointer;
+        list-style: none;
+      }
+      details.panel > summary::-webkit-details-marker {
+        display: none;
+      }
+      details.panel > summary h2 {
+        display: inline-block;
+      }
+      details.panel > summary::before {
+        content: "▸ ";
+        color: var(--muted);
+      }
+      details.panel[open] > summary::before {
+        content: "▾ ";
+      }
+      .disclaimer {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 20px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+      }
+      .error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+        padding: 16px;
+        border-radius: 10px;
+      }
+      .viewbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+        align-items: center;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin: 14px 0;
+      }
+      .viewbar label {
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 0 5px;
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-left: 4px;
+      }
+      .tag-bogo {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .tag-reward {
+        background: #ede9fe;
+        color: #6d28d9;
+      }
+      .tag-gift {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .panel.rewards {
+        border-left: 4px solid #2563eb;
+      }
+      .panel.reorder {
+        border-left: 4px solid #0d9488;
+      }
+      .tag-bulk {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .cat-pill {
+        display: inline-block;
+        font-size: 10px;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 0 5px;
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+      .panel.actions {
+        border-left: 4px solid #d97706;
+      }
+      .panel.actions h2 {
+        margin-bottom: 4px;
+      }
+      ol.act-list {
+        list-style: none;
+        margin: 8px 0 0;
+        padding: 0;
+      }
+      ol.act-list li {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+      }
+      ol.act-list li:first-child {
+        border-top: 0;
+      }
+      .rank-n {
+        flex: 0 0 24px;
+        height: 24px;
+        border-radius: 999px;
+        background: var(--green);
+        color: #fff;
+        font-weight: 700;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .act-head {
+        font-weight: 600;
+      }
+      .act-detail {
+        color: #374151;
+        font-size: 13px;
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Buyer Attributes — who buys what</h1>
+      <p>
+        Load the orders CSV (from Button 2) to see each member's products and
+        find everyone who buys a given item.
+      </p>
+    </header>
+    <main>
+      <label id="dropzone" for="file">
+        <strong>Drop your <code>orders_master.csv</code> here</strong> or click
+        to choose it. (That's the file Button 2 keeps adding to; any
+        <code>orders_….csv</code> works too.)
+        <input id="file" type="file" accept=".csv,text/csv" />
+      </label>
+      <div id="app"></div>
+    </main>
+    <script>
+      (()=>{function Te(e){let t=String(e||"");t.charCodeAt(0)===65279&&(t=t.slice(1));let r=[],n="",o=[],i=!1;for(let p=0;p<t.length;p++){let h=t[p];i?h==='"'?t[p+1]==='"'?(n+='"',p++):i=!1:n+=h:h==='"'?i=!0:h===","?(o.push(n),n=""):h===`
+`||h==="\r"?(h==="\r"&&t[p+1]===`
+`&&p++,o.push(n),n="",r.push(o),o=[]):n+=h}if((n.length||o.length)&&(o.push(n),r.push(o)),!r.length)return{columns:[],rows:[]};let l=r[0],w=[];for(let p=1;p<r.length;p++){let h=r[p];if(h.length===1&&h[0]==="")continue;let R={};for(let T=0;T<l.length;T++)R[l[T]]=h[T]??"";w.push(R)}return{columns:l,rows:w}}function M(e){if(e==null)return 0;let t=parseFloat(String(e).replace(/,/g,"").trim());return Number.isFinite(t)?t:0}var J=[{key:"memberId",header:"Member ID",from:"genealogy",identity:!0},{key:"memberName",header:"Member Name",from:"genealogy"},{key:"region",header:"Region",from:"genealogy"},{key:"orderNumber",header:"Order Number",from:"tier2",identity:!0},{key:"orderDate",header:"Order Date",from:"tier2"},{key:"orderType",header:"Order Type",from:"tier2",note:"raw code I/D/R"},{key:"orderTypeLabel",header:"Order Type Label",from:"derived"},{key:"orderSource",header:"Order Source",from:"tier2",note:"raw code SO/IO/IN/VO/AS"},{key:"orderSourceLabel",header:"Order Source Label",from:"derived"},{key:"itemCode",header:"Item Code",from:"tier3",identity:!0,note:"UNIVERSAL product key \u2014 segment on this, never the description"},{key:"itemDescription",header:"Item Description",from:"tier3",note:"localized; human-readable only, NOT an identity"},{key:"qtyOrdered",header:"Qty Ordered",from:"tier3"},{key:"qtyShipped",header:"Qty Shipped",from:"tier3"},{key:"itemVolume",header:"Item Volume",from:"tier3"},{key:"totalLineVolume",header:"Total Line Volume",from:"tier3"},{key:"itemPrice",header:"Item Price",from:"tier3"},{key:"totalLinePrice",header:"Total Line Price",from:"tier3"},{key:"currency",header:"Currency",from:"tier3"}],Nt=J.map(e=>e.header),Vt=J.map(e=>e.key);var Z={name:"Cheng Rong",id:"10515373",region:"HKG",approxMembers:47};var m={PRODUCT:"product",BOGO:"bogo",REWARD_200PV:"reward_200pv",GIFT:"gift",COLLATERAL:"collateral",SHIPPING:"shipping",MEMBERSHIP:"membership"},ie={[m.PRODUCT]:"Product",[m.BOGO]:"BOGO",[m.REWARD_200PV]:"200PV reward",[m.GIFT]:"Monthly gift",[m.COLLATERAL]:"Collateral",[m.SHIPPING]:"Shipping",[m.MEMBERSHIP]:"Membership"},st=[{bucket:m.SHIPPING,desc:[/运费/]},{bucket:m.MEMBERSHIP,desc:[/Membership Renewal/i]},{bucket:m.COLLATERAL,desc:[/宣传册/,/欢迎信/,/杂志/,/标签贴/,/礼品袋/,/手册/,/海报/],code:[/^FLYER/i]},{bucket:m.REWARD_200PV,desc:[/200PV/i],code:[/^P\d/]},{bucket:m.GIFT,desc:[/每月一物/,/赠品/,/好礼/,/Product of the Month/i]},{bucket:m.BOGO,desc:[/BOGO/i]}];function Ie(e,t){let r=String(e??""),n=String(t??"");for(let o of st)if(o.desc&&o.desc.some(i=>i.test(n))||o.code&&o.code.some(i=>i.test(r)))return o.bucket;return m.PRODUCT}var nt=new Set([m.PRODUCT,m.BOGO]),ot=m.REWARD_200PV,Ut=new Set([m.GIFT,m.COLLATERAL,m.SHIPPING,m.MEMBERSHIP]);function ke(e,{includeRewards:t=!1}={}){return nt.has(e)?!0:e===ot?!!t:!1}function de(e){let t=String(e??"").match(/-?[\d.,]+/);return t?parseFloat(t[0].replace(/,/g,"")):0}function Pe(e){return de(e)>0}var C={OILS:"oils",SUPPLEMENTS:"supplements",SKINCARE:"skincare",HOME:"home",KITS:"kits",ACCESSORIES:"accessories",OTHER:"other"},F={oils:"Essential oils",supplements:"Supplements & wellness",skincare:"Skincare & personal care",home:"Home & cleaning",kits:"Kits & sets",accessories:"Accessories & diffusers",other:"Other"},le=[C.OILS,C.SUPPLEMENTS,C.SKINCARE,C.HOME,C.KITS,C.ACCESSORIES,C.OTHER],at=["\u67D1\u6A58\u6E05\u65B0","\u7F2C\u8349","\u5C24\u52A0\u5229","\u5E7F\u85FF\u9999","\u878D\u60C5\u5047\u671F","\u4E1D\u67CF","\u827E\u8349","\u987A\u7545\u547C\u5438","\u67E0\u6AAC\u5C24\u52A0\u5229","\u8D4B\u6D3B\u547C\u5438","\u6A59\u82B1","\u897F\u6D0B\u84CD\u8349","\u5B89\u5B81\u795E\u6C14","\u59DC\u9EC4","\u4E50\u91CA","\u751F\u59DC","\u4E01\u9999\u82B1\u857E","\u6A80\u9999","\u7EA2\u6A58","\u84DD\u827E\u83CA","\u897F\u4F2F\u5229\u4E9A\u51B7\u6749","\u9EA6\u5362\u5361","\u65AF\u91CC\u5170\u5361\u8089\u6842\u76AE","\u767E\u91CC\u9999","\u5C71\u9E21\u6912","\u6866\u6728","\u5143\u6C14\u7115\u80FD","\u5143\u6C14","\u82B9\u83DC\u7C7D","\u6728\u5170\u82B1","\u8212\u7F13","\u5B8C\u7F8E\u4FEE\u62A4","\u4E73\u9999","Petitgrain","Rose","Moringa Rose"];function ce(e,t){let r=String(e??""),n=String(t??"");return/扩香|收纳|喷雾瓶|木盒|针织|Diffuser/i.test(n)?C.ACCESSORIES:/保卫/.test(n)&&/(牙膏|洗手|洗碗|洗衣|清洁|蔬果|喷雾|口腔)/.test(n)||/牙膏|口腔|漱口|洗手液|洗碗|洗衣|清洁/.test(n)?C.HOME:/面膜|洁面|洗面|精华|乳霜|面霜|保湿霜|眼霜|爽肤|柔肤|焕颜|焕采|焕肤|卸妆|磨砂|护手乳|防晒|紧肤|修护霜|润肤露|精华水|精华喷雾|洗发|护发|沐浴|浴爆|Skin ?Care|Serum|Face Cream|Hydrosol|Correct-X|IKISE/i.test(n)?C.SKINCARE:/^35/.test(r)||/胶囊|软糖|益生菌|鱼油|维生素|蔬果粉|咀嚼片|饮品|饮料|能量粉|胶原蛋白|糖果|Complex|CRS|VMz|Soft Gel|ProBiome|Assist/i.test(n)?C.SUPPLEMENTS:/^(30|31|41|49)/.test(r)||/精油|呵护系列|香脂|Touch|Protective Blend|椰子油|Castor Oil/i.test(n)||at.some(o=>n.includes(o))?C.OILS:C.OTHER}function Be(e,t){let r=String(t??"").replace(/^200PV[-\s]*/i,"");if(/BOGO/i.test(r)){let n=ce(e,r.replace(/^BOGO[-\s]*/i,""));return{category:n===C.OTHER?C.OILS:n,secondary:null}}if(/套装|\bKit\b|Trio|Skincare Series/i.test(r)){let n=ce(e,r);return{category:C.KITS,secondary:n===C.OTHER?null:n}}return{category:ce(e,r),secondary:null}}var Ae=60,qe=8,it=30,Ne=3,dt=1.5,ct=new Set(["oils","supplements","skincare","home"]);var ue=Object.fromEntries(J.map(e=>[e.key,e.header])),b=(e,t)=>{let r=e[ue[t]];return r??""};function Me(e){let t=String(e||"").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(!t)return null;let r=new Date(Number(t[3]),Number(t[1])-1,Number(t[2]));return Number.isNaN(r.getTime())?null:r}function xe(e,t){return Math.floor((e-t)/864e5)}function Ve(e){return Math.floor(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate())/864e5)}function He(e){let t=new Map;for(let r of e.orders.values()){if(!r.date)continue;let n=Ve(r.date),o=t.get(n);o?o.qty+=r.qty:t.set(n,{day:n,date:r.date,qty:r.qty})}return[...t.values()].sort((r,n)=>r.day-n.day)}function lt(e){return He(e).map((t,r,n)=>({date:t.date,qty:t.qty,gapDays:r===0?null:t.day-n[r-1].day}))}function ut(e,t){if(!ct.has(e.productCategory))return null;let r=He(e);if(r.length<Ne)return null;let n=r.length-1,o=r[r.length-1].day-r[0].day,i=Math.max(1,Math.round(o/n)),l=Ve(t)-r[r.length-1].day,w=l-i,p=r[r.length-1].qty,h=r.slice(0,-1).map(S=>S.qty),R=h.reduce((S,k)=>S+k,0)/h.length,T=r.map((S,k)=>({date:S.date,qty:S.qty,gapDays:k===0?null:S.day-r[k-1].day}));return{itemCode:e.itemCode,description:e.description,category:e.productCategory,categoryLabel:F[e.productCategory]||e.productCategory,purchases:r.length,intervals:n,cadenceDays:i,lastDate:r[r.length-1].date,daysSinceOrder:l,daysOverdue:w,usualQty:Math.round(R*10)/10,lastQty:p,bulkLastOrder:R>0&&p>R*dt,history:T}}function Ue(e,t=new Date){let{columns:r,rows:n}=Te(e);if(!r.includes(ue.itemCode)||!r.includes(ue.memberId))throw new Error("This doesn't look like a Button 2 orders CSV (missing Item Code / Member ID columns).");let o=new Map,i=new Map,l=new Map,w=new Map,p=new Set,h=new Set,R={},T=0;for(let s of n){let a=String(b(s,"memberId")).trim(),u=String(b(s,"itemCode")).trim();if(!a||!u)continue;let g=b(s,"itemDescription"),I=Ie(u,g),D=Pe(b(s,"totalLinePrice")),y=I===m.GIFT||I===m.REWARD_200PV;if(y&&!D&&a!==Z.id){let X=b(s,"memberName"),rt=b(s,"region")||"(none)",Re=M(b(s,"qtyShipped"))||M(b(s,"qtyOrdered")),G=Me(b(s,"orderDate")),L=w.get(u);L||(L={itemCode:u,description:g,bucket:I,recipients:new Map,qty:0,lineCount:0,lastDate:null},w.set(u,L)),g&&!L.description&&(L.description=g),L.qty+=Re,L.lineCount+=1,G&&(!L.lastDate||G>L.lastDate)&&(L.lastDate=G);let q=L.recipients.get(a);q||(q={id:a,name:X,region:rt,qty:0,lastDate:null},L.recipients.set(a,q)),q.qty+=Re,G&&(!q.lastDate||G>q.lastDate)&&(q.lastDate=G)}if(!(ke(I)||y&&D)){let X=R[I]||(R[I]={lines:0,codes:new Set});X.lines+=1,X.codes.add(u);continue}T+=1;let $e=b(s,"memberName"),V=b(s,"region")||"(none)",W=b(s,"orderNumber"),H=M(b(s,"qtyShipped"))||M(b(s,"qtyOrdered")),U=M(b(s,"totalLineVolume"))||M(b(s,"itemVolume")),j=b(s,"currency"),et=de(b(s,"totalLinePrice")),E=Me(b(s,"orderDate")),{category:ae,secondary:tt}=Be(u,g),Oe=tt||ae,Le=y?m.PRODUCT:I;j&&h.add(j),p.add(W);let f=o.get(a);f||(f={id:a,name:$e,region:V,orders:new Set,products:new Map,totalVolume:0,totalQty:0,lineCount:0,spend:new Map,catVol:new Map,firstDate:null,lastDate:null},o.set(a,f)),f.orders.add(W),f.totalVolume+=U,f.totalQty+=H,f.lineCount+=1,f.catVol.set(Oe,(f.catVol.get(Oe)||0)+U),j&&f.spend.set(j,(f.spend.get(j)||0)+et),E&&((!f.firstDate||E<f.firstDate)&&(f.firstDate=E),(!f.lastDate||E>f.lastDate)&&(f.lastDate=E));let $=f.products.get(u);$||($={itemCode:u,description:g,category:Le,productCategory:ae,qty:0,volume:0,lineCount:0,lastDate:null,orders:new Map},f.products.set(u,$)),$.qty+=H,$.volume+=U,$.lineCount+=1,g&&!$.description&&($.description=g),E&&(!$.lastDate||E>$.lastDate)&&($.lastDate=E);let De=W||`${u}#${$.lineCount}`,B=$.orders.get(De);B||(B={date:E,qty:0},$.orders.set(De,B)),B.qty+=H,E&&(!B.date||E>B.date)&&(B.date=E);let O=i.get(u);O||(O={itemCode:u,description:g,category:Le,productCategory:ae,buyers:new Map,qty:0,volume:0,lineCount:0,regions:new Set,lastDate:null},i.set(u,O)),g&&!O.description&&(O.description=g),O.qty+=H,O.volume+=U,O.lineCount+=1,O.regions.add(V),E&&(!O.lastDate||E>O.lastDate)&&(O.lastDate=E);let K=O.buyers.get(a);K||(K={id:a,name:$e,region:V,qty:0,volume:0},O.buyers.set(a,K)),K.qty+=H,K.volume+=U;let A=l.get(V);A||(A={region:V,buyers:new Set,volume:0,qty:0,orders:new Set},l.set(V,A)),A.buyers.add(a),A.volume+=U,A.qty+=H,A.orders.add(W)}let S=[...o.values()].map(s=>{let a=[...s.products.values()];for(let y of a)y.history=lt(y);let u=a.sort((y,v)=>v.volume-y.volume),g=s.lastDate?xe(t,s.lastDate):null,I=a.map(y=>ut(y,t)).filter(Boolean).sort((y,v)=>v.daysOverdue-y.daysOverdue),D=[...s.catVol.entries()].map(([y,v])=>({category:y,label:F[y]||y,volume:v,pct:s.totalVolume?Math.round(v/s.totalVolume*100):0})).sort((y,v)=>v.volume-y.volume);return{id:s.id,name:s.name,region:s.region,orderCount:s.orders.size,distinctProducts:s.products.size,totalVolume:s.totalVolume,totalQty:s.totalQty,lineCount:s.lineCount,firstDate:s.firstDate,lastDate:s.lastDate,daysSinceOrder:g,spend:[...s.spend.entries()].map(([y,v])=>({currency:y,amount:v})),categoryProfile:D,topCategory:D[0]?D[0].category:null,leaningLabel:D[0]?D[0].label:"\u2014",segments:(()=>{let y=D.filter(v=>v.pct>=it).map(v=>v.category);return y.length||!D[0]?y:[D[0].category]})(),topProducts:u.slice(0,5),products:u,recurring:I}});S.sort((s,a)=>a.totalVolume-s.totalVolume);let k=[...i.values()].map(s=>{let a=[...s.buyers.values()].sort((u,g)=>g.volume-u.volume);return{itemCode:s.itemCode,description:s.description,category:s.category,productCategory:s.productCategory,buyerCount:a.length,buyers:a,qty:s.qty,volume:s.volume,lineCount:s.lineCount,regions:[...s.regions].sort(),lastDate:s.lastDate}});k.sort((s,a)=>a.buyerCount-s.buyerCount||a.volume-s.volume);let We=[...l.values()].map(s=>({region:s.region,buyers:s.buyers.size,orders:s.orders.size,volume:s.volume,qty:s.qty})).sort((s,a)=>a.volume-s.volume),ne=[...w.values()].map(s=>{let a=[...s.recipients.values()].sort((u,g)=>(g.lastDate?g.lastDate.getTime():0)-(u.lastDate?u.lastDate.getTime():0)||g.qty-u.qty);return{itemCode:s.itemCode,description:s.description,bucket:s.bucket,bucketLabel:ie[s.bucket]||s.bucket,recipientCount:a.length,qty:s.qty,lineCount:s.lineCount,lastDate:s.lastDate,recipients:a}}).filter(s=>s.recipientCount>0).sort((s,a)=>a.recipientCount-s.recipientCount||a.qty-s.qty),be=new Set;for(let s of ne)for(let a of s.recipients)be.add(a.id);let x=null,N=null;for(let s of S)s.firstDate&&(!x||s.firstDate<x)&&(x=s.firstDate),s.lastDate&&(!N||s.lastDate>N)&&(N=s.lastDate);let Ce=S.filter(s=>s.id!==Z.id&&s.totalVolume>0&&s.daysSinceOrder!=null&&s.daysSinceOrder>=Ae).map(s=>({id:s.id,name:s.name,region:s.region,totalVolume:s.totalVolume,daysSinceOrder:s.daysSinceOrder,score:s.totalVolume*s.daysSinceOrder,topProducts:s.topProducts.slice(0,3).map(a=>a.description||a.itemCode)})).sort((s,a)=>a.score-s.score),Xe={quietDays:Ae,list:Ce.slice(0,qe),moreCount:Math.max(0,Ce.length-qe)},oe=[],Se=0,we=new Set;for(let s of S)if(s.id!==Z.id)for(let a of s.recurring)Se+=1,we.add(a.category),a.daysOverdue>=0&&oe.push({id:s.id,name:s.name,region:s.region,...a});oe.sort((s,a)=>a.daysOverdue-s.daysOverdue);let Je={list:oe,qualifyingPairs:Se,minPurchases:Ne,windowDays:x&&N?xe(N,x):null,categoryList:le.filter(s=>we.has(s)).map(s=>({category:s,label:F[s]}))},_={byCategory:{},totalLines:0,totalCodes:0},ve=new Set;for(let[s,a]of Object.entries(R)){_.byCategory[s]={label:ie[s]||s,lines:a.lines,codes:a.codes.size},_.totalLines+=a.lines;for(let u of a.codes)ve.add(u)}_.totalCodes=ve.size;let Ee=new Set;for(let s of S)s.segments.forEach(a=>Ee.add(a));let Ze=le.filter(s=>Ee.has(s)).map(s=>({category:s,label:F[s]}));return{asOf:t,reactivation:Xe,reorder:Je,rewards:{list:ne,itemCount:ne.length,recipientCount:be.size},categoryList:Ze,excluded:_,currencies:[...h].sort(),totals:{buyers:S.length,products:k.length,orders:p.size,lines:T,excludedLines:_.totalLines,volume:S.reduce((s,a)=>s+a.totalVolume,0),qty:S.reduce((s,a)=>s+a.totalQty,0),dateRange:{from:x,to:N}},members:S,products:k,regions:We}}function d(e){return String(e??"").replace(/[&<>"']/g,t=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[t])}function c(e){return Math.round(Number(e)||0).toLocaleString("en-US")}function P(e){return e?e.toLocaleDateString("en-US"):"\u2014"}function mt(e){return!e||!e.length?"\u2014":e.map(t=>`${d(t.currency)} ${c(t.amount)}`).join(" \xB7 ")}function Q(e,t,r){return`<div class="card"><div class="card-v">${t}</div><div class="card-l">${d(e)}</div>`+(r?`<div class="card-s">${r}</div>`:"")+"</div>"}function Qe(e){return e==="bogo"?' <span class="tag tag-bogo">BOGO</span>':e==="reward_200pv"?' <span class="tag tag-reward">200PV</span>':""}var Y={oils:"Oils",supplements:"Supplements",skincare:"Skincare",home:"Home",kits:"Kits",accessories:"Accessories",other:"Other"};function pt(e){return!e||!e.length?"\u2014":e.filter(t=>t.pct>0).map(t=>`${d(Y[t.category]||t.label)} ${t.pct}%`).join(" \xB7 ")}function yt(e){let t=e.excluded||{byCategory:{},totalLines:0},r=Object.values(t.byCategory).sort((o,i)=>i.lines-o.lines).map(o=>`${d(o.label)} ${c(o.lines)}`);return`<div class="viewbar"><span class="muted small">${t.totalLines?`Hiding ${c(t.totalLines)} non-product line${t.totalLines===1?"":"s"} (${r.join(", ")})`:"All lines counted as product choices"}</span></div>`}function ht(e){let t=e.reactivation||{list:[],moreCount:0,quietDays:60};if(!t.list.length)return`<details class="panel actions" open><summary><h2>Win back \u2014 lapsed buyers</h2></summary><p class="muted">No lapsed buyers right now \u2014 everyone with real volume has ordered within ${t.quietDays} days. \u{1F389}</p></details>`;let r=t.list.map((o,i)=>`<li><span class="rank-n">${i+1}</span><div class="act-body"><div class="act-head">${d(o.name)} <span class="muted small">${d(o.region)}</span></div><div class="act-detail"><strong>${c(o.totalVolume)} PV</strong> total \xB7 quiet <strong>${c(o.daysSinceOrder)} days</strong>`+(o.topProducts.length?` \xB7 open with: ${o.topProducts.map(d).join(", ")}`:"")+"</div></div></li>").join(""),n=t.moreCount?`<p class="muted small">+ ${c(t.moreCount)} more lapsed buyers \u2014 in the Buyers table below (sort by \u201CDays since\u201D).</p>`:"";return`<details class="panel actions" open><summary><h2>Win back \u2014 lapsed buyers to reach out to</h2></summary><p class="muted small">Buyers who ordered real volume but have gone quiet (${t.quietDays}+ days). Ranked by past volume \xD7 days since last order \u2014 open the conversation with what they already buy.</p><ol class="act-list">${r}</ol>${n}</details>`}function gt(e){let t=e.totals,r=t.dateRange.from&&t.dateRange.to?`${P(t.dateRange.from)} \u2013 ${P(t.dateRange.to)}`:"\u2014";return'<div class="cards">'+Q("Buyers",c(t.buyers),"members with orders")+Q("Distinct products",c(t.products),"by item code")+Q("Orders",c(t.orders))+Q("Total volume",c(t.volume)+" <span class='unit'>PV</span>","currency-neutral")+Q("Date range",`<span style="font-size:15px">${d(r)}</span>`,e.currencies.length?"currencies: "+e.currencies.map(d).join(", "):"")+"</div>"}var Ge={buyers:e=>e.buyerCount,qty:e=>e.qty,volume:e=>e.volume,code:e=>e.itemCode,desc:e=>(e.description||"").toLowerCase()},te={key:"buyers",dir:-1};function ft(e){return`<table class="tbl sub"><thead><tr><th>Buyer</th><th>ID</th><th>Region</th><th class="num">Qty</th><th class="num">Volume</th></tr></thead><tbody>${e.buyers.map(r=>`<tr><td>${d(r.name)}</td><td class="muted">${d(r.id)}</td><td>${d(r.region)}</td><td class="num">${c(r.qty)}</td><td class="num">${c(r.volume)}</td></tr>`).join("")}</tbody></table>`}function bt(e){return e.map(t=>{let r=ft(t);return`<tr class="row" data-code="${d(t.itemCode)}"><td><span class="caret">\u25B8</span> <code>${d(t.itemCode)}</code></td><td>${d(t.description)||'<span class="muted">\u2014</span>'}${Qe(t.category)}`+(t.productCategory?` <span class="cat-pill">${d(Y[t.productCategory]||t.productCategory)}</span>`:"")+`</td><td class="num"><strong>${c(t.buyerCount)}</strong></td><td class="num">${c(t.qty)}</td><td class="num">${c(t.volume)}</td><td>${t.regions.map(d).join(", ")}</td><td>${P(t.lastDate)}</td></tr><tr class="detail" style="display:none"><td colspan="7">${r}</td></tr>`}).join("")}function me(e){let t=(document.getElementById("prodSearch").value||"").toLowerCase(),r=e.products.filter(o=>!t||String(o.itemCode).toLowerCase().includes(t)||String(o.description||"").toLowerCase().includes(t)),n=Ge[te.key]||Ge.buyers;r=r.slice().sort((o,i)=>{let l=n(o),w=n(i);return l<w?-te.dir:l>w?te.dir:0}),document.querySelector("#prodTbl tbody").innerHTML=bt(r),document.getElementById("prodCount").textContent=r.length+" of "+e.products.length+" products"}function Ct(){return'<details class="panel" open><summary><h2>Products \u2014 who buys what</h2></summary><p class="muted small">Click a product to see everyone who buys it \u2014 your outreach list for that item. Sorted by number of buyers.</p><div class="controls"><input id="prodSearch" type="search" placeholder="Search item code or description\u2026"/><span id="prodCount" class="muted"></span></div><table class="tbl click" id="prodTbl"><thead><tr><th data-psort="code">Item Code</th><th data-psort="desc">Product</th><th class="num" data-psort="buyers">Buyers</th><th class="num" data-psort="qty">Qty</th><th class="num" data-psort="volume">Volume</th><th>Regions</th><th>Last bought</th></tr></thead><tbody></tbody></table></details>'}var _e={name:e=>e.name.toLowerCase(),region:e=>e.region,orders:e=>e.orderCount,products:e=>e.distinctProducts,volume:e=>e.totalVolume,days:e=>e.daysSinceOrder==null?1/0:e.daysSinceOrder},re={key:"volume",dir:-1};function St(e){let t=e.products.map(r=>`<tr class="row"><td><span class="caret">\u25B8</span> <code>${d(r.itemCode)}</code></td><td>${d(r.description)||'<span class="muted">\u2014</span>'}${Qe(r.category)}</td><td class="num">${c(r.qty)}</td><td class="num">${c(r.volume)}</td><td>${P(r.lastDate)}</td></tr><tr class="detail" style="display:none"><td colspan="5">${ze(r)}</td></tr>`).join("");return`<div class="muted small" style="margin-bottom:4px">Profile: ${pt(e.categoryProfile)}</div><div class="muted small" style="margin-bottom:4px">Spend: ${mt(e.spend)}</div><div class="muted small" style="margin-bottom:4px">Click an item to see every time they bought it.</div><table class="tbl sub click"><thead><tr><th>Item Code</th><th>Product</th><th class="num">Qty</th><th class="num">Volume</th><th>Last bought</th></tr></thead><tbody>${t}</tbody></table>`}function wt(e){return e.map(t=>{let r=t.topProducts.slice(0,3).map(n=>d(n.description||n.itemCode)).join(", ");return`<tr class="row" data-id="${d(t.id)}"><td><span class="caret">\u25B8</span> ${d(t.name)}</td><td class="muted">${d(t.id)}</td><td>${d(t.region)}</td><td class="num">${c(t.orderCount)}</td><td class="num">${c(t.distinctProducts)}</td><td class="num">${c(t.totalVolume)}</td><td class="small">${t.segments&&t.segments.length?t.segments.map(n=>d(Y[n]||n)).join(" \xB7 "):'<span class="muted">\u2014</span>'}</td><td class="small">${r||'<span class="muted">\u2014</span>'}</td><td>${P(t.lastDate)}</td><td class="num">${t.daysSinceOrder==null?"\u2014":c(t.daysSinceOrder)}</td></tr><tr class="detail" style="display:none"><td colspan="10">${St(t)}</td></tr>`}).join("")}function z(e){let t=(document.getElementById("buyerSearch").value||"").toLowerCase(),r=document.getElementById("buyerRegion").value,n=document.getElementById("buyerCategory").value,o=e.members.filter(l=>r!=="All"&&l.region!==r||n!=="All"&&!(l.segments||[]).includes(n)?!1:!t||l.name.toLowerCase().includes(t)||String(l.id).includes(t)),i=_e[re.key]||_e.volume;o=o.slice().sort((l,w)=>{let p=i(l),h=i(w);return p<h?-re.dir:p>h?re.dir:0}),document.querySelector("#buyerTbl tbody").innerHTML=wt(o),document.getElementById("buyerCount").textContent=o.length+" of "+e.members.length+" buyers"}function vt(e){let t=["All",...e.regions.map(n=>n.region)].map(n=>`<option value="${d(n)}">${d(n)}</option>`).join(""),r=['<option value="All">All categories</option>',...(e.categoryList||[]).map(n=>`<option value="${d(n.category)}">${d(n.label)}</option>`)].join("");return`<details class="panel" open><summary><h2>Buyers \u2014 what each one buys</h2></summary><p class="muted small">Click a member to see their products, so you can tailor an offer. "Buys" = categories that are \u226530% of their volume (so a mixed buyer shows under each). Sorted by total volume.</p><div class="controls"><input id="buyerSearch" type="search" placeholder="Search name or ID\u2026"/><label>Region <select id="buyerRegion">${t}</select></label><label>Buys <select id="buyerCategory">${r}</select></label><span id="buyerCount" class="muted"></span></div><table class="tbl click" id="buyerTbl"><thead><tr><th data-bsort="name">Name</th><th>ID</th><th data-bsort="region">Region</th><th class="num" data-bsort="orders">Orders</th><th class="num" data-bsort="products">Products</th><th class="num" data-bsort="volume">Volume</th><th>Buys</th><th>Top products</th><th>Last order</th><th class="num" data-bsort="days">Days since</th></tr></thead><tbody></tbody></table></details>`}function Et(e){return e.regions.length?`<details class="panel"><summary><h2>By region</h2></summary><table class="tbl"><thead><tr><th>Region</th><th class="num">Buyers</th><th class="num">Orders</th><th class="num">Volume</th><th class="num">Qty</th></tr></thead><tbody>${e.regions.map(r=>`<tr><td>${d(r.region)}</td><td class="num">${c(r.buyers)}</td><td class="num">${c(r.orders)}</td><td class="num">${c(r.volume)}</td><td class="num">${c(r.qty)}</td></tr>`).join("")}</tbody></table></details>`:""}var je={recipients:e=>e.recipientCount,qty:e=>e.qty,code:e=>e.itemCode,desc:e=>(e.description||"").toLowerCase(),last:e=>e.lastDate?e.lastDate.getTime():0},se={key:"recipients",dir:-1};function $t(e,t){return` <span class="tag ${e==="reward_200pv"?"tag-reward":"tag-gift"}">${d(t)}</span>`}function Ot(e){return`<table class="tbl sub"><thead><tr><th>Recipient</th><th>ID</th><th>Region</th><th class="num">How many</th><th>Last received</th></tr></thead><tbody>${e.recipients.map(r=>`<tr><td>${d(r.name)}</td><td class="muted">${d(r.id)}</td><td>${d(r.region)}</td><td class="num">${c(r.qty)}</td><td>${P(r.lastDate)}</td></tr>`).join("")}</tbody></table>`}function Lt(e){return e.map(t=>{let r=Ot(t);return`<tr class="row" data-code="${d(t.itemCode)}"><td><span class="caret">\u25B8</span> <code>${d(t.itemCode)}</code></td><td>${d(t.description)||'<span class="muted">\u2014</span>'}${$t(t.bucket,t.bucketLabel)}</td><td class="num"><strong>${c(t.recipientCount)}</strong></td><td class="num">${c(t.qty)}</td><td>${P(t.lastDate)}</td></tr><tr class="detail" style="display:none"><td colspan="5">${r}</td></tr>`}).join("")}function pe(e){let t=document.getElementById("rewardTbl");if(!t)return;let r=(document.getElementById("rewardSearch").value||"").toLowerCase(),n=(e.rewards.list||[]).filter(i=>!r||String(i.itemCode).toLowerCase().includes(r)||String(i.description||"").toLowerCase().includes(r)),o=je[se.key]||je.recipients;n=n.slice().sort((i,l)=>{let w=o(i),p=o(l);return w<p?-se.dir:w>p?se.dir:0}),t.querySelector("tbody").innerHTML=Lt(n),document.getElementById("rewardCount").textContent=n.length+" of "+e.rewards.list.length+" rewards"}function Dt(e){let t=e.rewards||{list:[]},r='<summary><h2>Rewards \u2014 who received what <span class="muted small">(for how-to / product-education outreach)</span></h2></summary>';return t.list.length?`<details class="panel rewards" open>${r}<p class="muted small">Members who received a <strong>monthly gift</strong> or <strong>200PV reward</strong> \u2014 your teaching list. Pick a reward \u2192 see everyone who got it \u2192 send them how-to / product-education info. Kept separate from the buying analysis above (a free gift isn't a chosen purchase), and excludes you. Sorted by number of recipients.</p><div class="controls"><input id="rewardSearch" type="search" placeholder="Search item code or description\u2026"/><span id="rewardCount" class="muted"></span></div><table class="tbl click" id="rewardTbl"><thead><tr><th data-rsort="code">Item Code</th><th data-rsort="desc">Reward</th><th class="num" data-rsort="recipients">Recipients</th><th class="num" data-rsort="qty">How many</th><th data-rsort="last">Last given</th></tr></thead><tbody></tbody></table></details>`:`<details class="panel rewards">${r}<p class="muted">No monthly gifts or 200PV rewards in this data yet.</p></details>`}var Rt={category:"All",supplementsOnly:!1};function ge(e){return e>0?`+${c(e)}d`:e===0?"due":`in ${c(-e)}d`}function Tt(e){let t=`<strong>${d(e.description)||d(e.itemCode)}</strong>`;return e.category==="supplements"?`Overdue on ${t} \u2014 <strong>check in</strong>: have they been taking it daily as suggested? How's it going? A care follow-up, not a sales push.`:`Likely running low on ${t} \u2014 a friendly heads-up they may be due to restock. No pressure.`}function ze(e){return`<table class="tbl sub"><thead><tr><th>Bought</th><th class="num">Qty</th><th class="num">Gap since prev.</th></tr></thead><tbody>${e.history.slice().reverse().map(r=>`<tr><td>${P(r.date)}</td><td class="num">${c(r.qty)}</td><td class="num">${r.gapDays==null?"\u2014":`${c(r.gapDays)}d`}</td></tr>`).join("")}</tbody></table>`}function It(e,t){let r=t.members.find(i=>i.id===e.id),o=(r&&r.recurring&&r.recurring.length?r.recurring:[e]).map(i=>`<tr class="row"><td><span class="caret">\u25B8</span> ${d(i.description)||d(i.itemCode)}</td><td>${d(Y[i.category]||i.categoryLabel)}</td><td class="num">~${c(i.cadenceDays)}d</td><td class="num">${c(i.daysSinceOrder)}d</td><td class="num">${ge(i.daysOverdue)}</td><td class="num">${c(i.purchases)}${i.bulkLastOrder?' <span class="muted small">\xB7 bulk last</span>':""}</td></tr><tr class="detail" style="display:none"><td colspan="6">${ze(i)}</td></tr>`).join("");return`<div class="act-detail" style="margin-bottom:8px">${Tt(e)}</div><div class="muted small" style="margin-bottom:4px">Everything ${d(e.name)} reorders <span class="muted small">\u2014 click an item to see every purchase</span>:</div><table class="tbl sub click"><thead><tr><th>Item</th><th>Category</th><th class="num">Cadence</th><th class="num">Days since</th><th class="num">Overdue</th><th class="num">Orders</th></tr></thead><tbody>${o}</tbody></table>`}function kt(e,t){return e.map(r=>{let n=r.bulkLastOrder?` <span class="tag tag-bulk" title="Most recent order was larger than usual \u2014 they may still have stock, so this isn't a confident overdue">bulk last order</span>`:"";return`<tr class="row" data-id="${d(r.id)}"><td><span class="caret">\u25B8</span> ${d(r.name)}</td><td>${d(r.region)}</td><td>${d(r.description)||d(r.itemCode)} <span class="cat-pill">${d(Y[r.category]||r.categoryLabel)}</span></td><td class="num">~${c(r.cadenceDays)}d</td><td class="num">${c(r.daysSinceOrder)}d</td><td class="num">${r.daysOverdue>0?`<strong>${ge(r.daysOverdue)}</strong>`:ge(r.daysOverdue)}${n}</td><td class="num">${c(r.purchases)}</td></tr><tr class="detail" style="display:none"><td colspan="7">${It(r,t)}</td></tr>`}).join("")}function ye(e){let t=document.getElementById("reorderTbl");if(!t)return;let r=document.getElementById("reorderSupOnly").checked,n=document.getElementById("reorderCategory");n.disabled=r;let o=r?"supplements":n.value,i=e.reorder.list.filter(l=>o==="All"||l.category===o);t.querySelector("tbody").innerHTML=kt(i,e),document.getElementById("reorderCount").textContent=i.length+" of "+e.reorder.list.length+" due/overdue"}function Pt(e){let t=e.reorder||{list:[],qualifyingPairs:0,categoryList:[],windowDays:null,minPurchases:3},r=t.windowDays?Math.round(t.windowDays/30):null,n=`Tracking <strong>${c(t.qualifyingPairs)}</strong> recurring (person \xD7 product) pair${t.qualifyingPairs===1?"":"s"} with \u2265${t.minPurchases} purchases of a consumable`+(r?` over a ~${c(r)}-month window`:"")+". Slow-cadence items can't be established yet \u2014 this gets more accurate as months accumulate.",o='<summary><h2>Reorder / replenishment \u2014 due or overdue <span class="muted small">(care-first check-ins)</span></h2></summary>';if(!t.list.length)return`<details class="panel reorder" open>${o}<p class="muted small">${n}</p><p class="muted">Nobody is due or overdue on a recurring item right now. \u{1F389}</p></details>`;let i=['<option value="All">All consumables</option>',...t.categoryList.map(l=>`<option value="${d(l.category)}">${d(l.label)}</option>`)].join("");return`<details class="panel reorder" open>${o}<p class="muted small">Complementary to win-back: this flags slipping on a <strong>specific recurring consumable</strong> (even while they still buy other things). Each row is one person \xD7 product, due/overdue by that item's own cadence \u2014 most overdue first. A reorder is a reason to <strong>check in</strong>, not to push.</p><p class="muted small">${n}</p><div class="controls"><label><input type="checkbox" id="reorderSupOnly"${Rt.supplementsOnly?" checked":""}/> \u{1F48A} Supplements only <span class="muted small">(prime check-in)</span></label><label>Category <select id="reorderCategory">${i}</select></label><span id="reorderCount" class="muted"></span></div><table class="tbl click" id="reorderTbl"><thead><tr><th>Person</th><th>Region</th><th>Product</th><th class="num">Cadence</th><th class="num">Days since</th><th class="num">Overdue</th><th class="num">Orders</th></tr></thead><tbody></tbody></table></details>`}var Bt=null,Ye=null;function ee(e){document.getElementById(e).addEventListener("click",r=>{if(r.target.closest("th"))return;let n=r.target.closest("tr.row");if(!n)return;let o=n.nextElementSibling;if(!o||!o.classList.contains("detail"))return;let i=o.style.display!=="none";o.style.display=i?"none":"table-row";let l=n.querySelector(".caret");l&&(l.textContent=i?"\u25B8":"\u25BE")})}function he(e,t,r,n){document.querySelectorAll(`#${e} th[${t}]`).forEach(o=>{o.classList.add("sortable"),o.addEventListener("click",()=>{let i=o.getAttribute(t);r.key===i?r.dir*=-1:(r.key=i,r.dir=-1),n()})})}function At(e){Bt=e,document.getElementById("app").innerHTML=yt(e)+gt(e)+ht(e)+Pt(e)+vt(e)+Ct(e)+Et(e)+Dt(e)+`<p class="disclaimer">Leads with <strong>win-back</strong> (lapsed buyers) and <strong>reorder/replenishment</strong> (due/overdue on a recurring consumable, by each item's own cadence \u2014 complementary signals); the product-popularity table is the promo-targeting tool ("who buys Tea Tree?"). The buying analysis shows <strong>product choices</strong> only \u2014 shipping, membership and other non-products are classified out (still in the underlying CSV). <strong>Monthly gifts and 200PV rewards</strong> are kept out of the buying signal and given their own <strong>Rewards</strong> section above (a free award isn't a chosen purchase) for how-to / product-education outreach. Volumes are PV (currency-neutral); spend is per currency. Everything keys on <strong>item code</strong>; descriptions are localized and shown only for reading.</p>`,me(e),z(e),pe(e),document.getElementById("prodSearch").addEventListener("input",()=>me(e)),document.getElementById("buyerSearch").addEventListener("input",()=>z(e)),document.getElementById("buyerRegion").addEventListener("change",()=>z(e)),document.getElementById("buyerCategory").addEventListener("change",()=>z(e)),ee("prodTbl"),ee("buyerTbl"),he("prodTbl","data-psort",te,()=>me(e)),he("buyerTbl","data-bsort",re,()=>z(e)),document.getElementById("rewardTbl")&&(document.getElementById("rewardSearch").addEventListener("input",()=>pe(e)),ee("rewardTbl"),he("rewardTbl","data-rsort",se,()=>pe(e))),document.getElementById("reorderTbl")&&(ye(e),document.getElementById("reorderSupOnly").addEventListener("change",()=>ye(e)),document.getElementById("reorderCategory").addEventListener("change",()=>ye(e)),ee("reorderTbl")),document.getElementById("dropzone").classList.add("loaded")}function qt(e){document.getElementById("app").innerHTML=`<div class="error"><strong>Couldn't read that file.</strong><br>${d(e)}<br><span class="muted">Use the orders CSV made by Button 2.</span></div>`}function Mt(){try{At(Ue(Ye,new Date))}catch(e){qt(e&&e.message?e.message:String(e))}}function fe(e){Ye=e,Mt()}function Ke(e){return new Promise((t,r)=>{let n=new FileReader;n.onload=()=>t(String(n.result)),n.onerror=()=>r(n.error||new Error("Could not read file")),n.readAsText(e)})}function Fe(){let e=document.getElementById("dropzone"),t=document.getElementById("file");if(!e)return;t.addEventListener("change",async()=>{t.files&&t.files.length&&fe(await Ke(t.files[0]))});let r=n=>{n.preventDefault(),n.stopPropagation()};["dragenter","dragover"].forEach(n=>window.addEventListener(n,o=>{r(o),o.dataTransfer&&(o.dataTransfer.dropEffect="copy"),e.classList.add("drag")})),window.addEventListener("dragleave",n=>{r(n),n.relatedTarget===null&&e.classList.remove("drag")}),window.addEventListener("drop",async n=>{r(n),e.classList.remove("drag"),n.dataTransfer&&n.dataTransfer.files&&n.dataTransfer.files.length&&fe(await Ke(n.dataTransfer.files[0]))})}typeof window<"u"&&(window.Dashboard={loadCsvText:fe},document.readyState==="loading"?document.addEventListener("DOMContentLoaded",Fe):Fe());})();
+    </script>
+  </body>
+</html>
