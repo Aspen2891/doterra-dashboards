@@ -64,6 +64,63 @@
   .region{font-weight:600}.loc{color:var(--muted);font-size:12px}
   .sub2{color:var(--muted);font-size:11.5px}
   .empty{color:var(--muted);text-align:center;padding:40px 0}
+
+  /* ---- Phone layout ----------------------------------------------------------------
+     The results table is ~690px wide; on a 390px phone that left PV and Overall — the two
+     numbers the tool exists to produce — off-screen behind a horizontal swipe with no
+     affordance that it scrolled. Below 760px the table reflows into one stacked block per
+     region: rank on the left, region on top, Overall large on the right, and the four
+     figures in a 2x2 grid, each labelled from its data-l. No horizontal scrolling.
+     760px, not 560px: the table needs ~720px of card width, so 600-700px viewports
+     (landscape phone, small tablet) still had to swipe under a 560px breakpoint. */
+  @media (max-width:760px){
+    /* Vertical space is the scarce resource on a phone: unchanged, the header and controls
+       pushed the first result ~1300px down, so she'd scroll past everything to see an answer.
+       Tighten the chrome and drop the intro copy (the search box is self-explanatory). */
+    .wrap{padding:14px 12px 40px}
+    h1{font-size:18px}
+    .sub{display:none}
+    .controls{gap:7px 14px;margin:12px 0 4px}
+    .ctl{gap:6px}
+    .seg button{padding:7px 10px;font-size:12.5px}
+    .lbl{font-size:11.5px}
+    #q{font-size:16px;padding:12px 14px 12px 40px}   /* 16px avoids iOS zoom-on-focus */
+    .searchbar svg{top:13px;left:13px}
+    details.regionfilter>summary{padding:8px 12px}
+
+    .tblwrap{overflow-x:visible}
+    table,tbody,tr,td{display:block;width:auto}
+    thead{display:none}
+    tbody tr{
+      display:grid;
+      grid-template-columns:24px minmax(0,1fr) minmax(0,1fr) auto;
+      align-items:start;
+      column-gap:10px;row-gap:3px;
+      padding:11px 13px;
+    }
+    td{padding:0;text-align:left;white-space:normal}
+    td:nth-child(1){grid-column:1;grid-row:1/span 3;padding-top:1px}
+    td:nth-child(2){grid-column:2/4;grid-row:1;margin-bottom:4px}
+    td:nth-child(7){grid-column:4;grid-row:1/span 3;text-align:right;font-size:21px;
+                    font-weight:700;line-height:1;align-self:center;padding-left:4px}
+    td:nth-child(3){grid-column:2;grid-row:2}
+    td:nth-child(4){grid-column:3;grid-row:2}
+    td:nth-child(5){grid-column:2;grid-row:3}
+    td:nth-child(6){grid-column:3;grid-row:3}
+    /* label above each figure, so a bare number is never ambiguous */
+    td[data-l]::before{
+      content:attr(data-l);display:block;color:var(--muted);
+      font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;
+    }
+    td.ov::after{
+      content:"Overall";display:block;color:var(--muted);
+      font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;
+      margin-top:2px;
+    }
+    /* the full-cell highlight reads as a stray block once cells are stacked */
+    td.best{background:none;color:var(--best-ink);font-weight:700}
+    td.best::before{color:var(--best-ink);opacity:.75}
+  }
   .info{display:inline-flex;width:15px;height:15px;align-items:center;justify-content:center;border:1px solid var(--muted);border-radius:50%;font-size:10px;font-style:normal;margin-left:5px;cursor:pointer;color:var(--muted)}
   .info:hover{border-color:var(--accent);color:var(--accent)}
   #pop{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
@@ -218,13 +275,16 @@ function fmtPct(x){ return x==null?'—':Math.round(x*100)+''; }
 
 function rowHtml(r,i){
   const bestVal=r.valueIdx===1, bestPv=r.pvIdx!=null&&r.pvIdx===1;
+  const sym=SYM[dispCur]||'';
+  // data-l is the phone label: on narrow screens the header row is hidden and the table
+  // reflows into stacked cards, so each number has to carry its own label.
   return `<tr>
     <td><span class="rank ${i===0?'r1':''}">${i+1}</span></td>
     <td><span class="region">${REGION_NAME[r.region]||r.region}</span> <span class="loc">${r.region}</span>${r.name?`<div class="sub2">${r.name}${r.size?' · '+r.size:''}</div>`:''}</td>
-    <td>${money(r.local,r.currency)}</td>
-    <td class="${rankMode==='value'&&bestVal?'best':''}">${fmtDisp(r.priceDisp)}</td>
-    <td>${r.pv!=null?r.pv:'—'}</td>
-    <td class="${rankMode==='pv'&&bestPv?'best':''}">${r.pvPer100!=null? r.pvPer100.toFixed(1):'—'}</td>
+    <td data-l="${basis}">${money(r.local,r.currency)}</td>
+    <td data-l="≈ ${sym}" class="${rankMode==='value'&&bestVal?'best':''}">${fmtDisp(r.priceDisp)}</td>
+    <td data-l="PV">${r.pv!=null?r.pv:'—'}</td>
+    <td data-l="PV/100${sym}" class="${rankMode==='pv'&&bestPv?'best':''}">${r.pvPer100!=null? r.pvPer100.toFixed(1):'—'}</td>
     <td class="ov">${fmtPct(r.overall)}</td>
   </tr>`;
 }
