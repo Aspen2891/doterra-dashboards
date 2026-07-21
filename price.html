@@ -37,6 +37,15 @@
   .seg button{border:none;background:none;color:var(--muted);padding:7px 13px;font-size:13px;cursor:pointer}
   .seg button.on{background:var(--accent);color:var(--on-ink);font-weight:600}
   .lbl{font-size:12px;color:var(--muted)}
+  /* the tax pickers were native <select>s: white boxes that blew a hole in dark mode.
+     Match the .seg controls, and draw our own chevron since appearance:none drops it. */
+  .ctl select{appearance:none;-webkit-appearance:none;border:1px solid var(--line);border-radius:10px;
+    background:var(--panel);color:var(--ink);font-size:13px;padding:7px 30px 7px 11px;cursor:pointer;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%237b8794' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 11px center;background-size:11px}
+  .ctl select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  /* the dropdown list itself is OS-drawn; without this it stays white-on-white in dark mode */
+  .ctl select option{background:var(--panel);color:var(--ink)}
   details.regionfilter{margin:6px 0 0;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
   details.regionfilter>summary{padding:9px 14px;cursor:pointer;font-size:13px;color:var(--ink);list-style:none;display:flex;justify-content:space-between;align-items:center}
   details.regionfilter>summary::-webkit-details-marker{display:none}
@@ -329,9 +338,9 @@ let selRegions = loadSel();
 
 function loadFx(){ try{ return Object.assign({}, DEFAULT_FX, JSON.parse(localStorage.getItem('fx2026')||'{}')); }catch(e){ return {...DEFAULT_FX}; } }
 function saveFx(){ localStorage.setItem('fx2026', JSON.stringify(fx)); }
-// Her own five markets — the only ones she can actually buy from. Without a preset the only
-// route was Clear followed by five correct taps in a flat 57-item list.
-const MY_MARKETS=['CN','HK','SG','US','CA'].filter(r=>ALL_REGIONS.includes(r));
+// Her own markets — the only ones she can actually buy from. Without a preset the only
+// route was Clear followed by six correct taps in a flat 57-item list. TW added 2026-07-21.
+const MY_MARKETS=['CN','HK','TW','SG','US','CA'].filter(r=>ALL_REGIONS.includes(r));
 function loadSel(){
   // Two bugs here before: a deliberate Clear ([]) was indistinguishable from "never set" and
   // silently reverted to all 57 on reload; and a stored code that no longer exists after a
